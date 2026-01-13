@@ -176,11 +176,11 @@ Connect to any MCP-compatible server:
 - [x] Basic Tauri desktop shell
 - [x] Hono server with health check
 
-### Phase 2: Agent Core
-- [ ] LLM provider abstraction (AI SDK)
-- [ ] Agent configuration schema
-- [ ] Agent executor with tool loop
-- [ ] Basic built-in tools (code_write, bash_execute)
+### Phase 2: Agent Core ✓
+- [x] LLM provider abstraction (AI SDK)
+- [x] Agent configuration schema
+- [x] Agent executor with tool loop
+- [x] Basic built-in tools (code_write, bash_execute)
 
 ### Phase 3: Skills System
 - [ ] Markdown skill parser

@@ -14,6 +14,7 @@
     "@ai-sdk/anthropic": "^1.1.6",
     "@ai-sdk/google": "^1.1.6",
     "@ai-sdk/openai": "^1.1.6",
+    "@hono/zod-validator": "^0.4.2",
     "@modelcontextprotocol/sdk": "^1.0.4",
     "ai": "^4.1.0",
     "gray-matter": "^4.0.3",

@@ -8,7 +8,14 @@
       "Bash(bun install:*)",
       "Bash(timeout /t 3 /nobreak)",
       "Bash(curl:*)",
-      "Bash(bun run build:*)"
+      "Bash(bun run build:*)",
+      "Bash(bun run:*)",
+      "Bash(bunx tauri icon:*)",
+      "Bash(node -e:*)",
+      "Bash(xxd:*)",
+      "Bash(npx --yes sharp-cli:*)",
+      "Bash(bun add:*)",
+      "Bash(bun -e:*)"
     ]
   }
 }

@@ -5,13 +5,14 @@
   "version": "0.1.0",
   "build": {
     "frontendDist": "../dist",
-    "devUrl": "http://localhost:1420",
+    "devUrl": "http://localhost:3000",
     "beforeDevCommand": "bun run --cwd ../app dev",
     "beforeBuildCommand": "bun run --cwd ../app build"
   },
   "app": {
     "windows": [
       {
+        "label": "main",
         "title": "OpenWork",
         "width": 1400,
         "height": 900,

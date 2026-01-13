@@ -2,6 +2,7 @@ import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { logger } from "hono/logger";
 import { v1Routes } from "../routes/v1";
+import { initializeStorage } from "../storage";
 
 export interface ServerConfig {
   port?: number;
@@ -49,6 +50,11 @@ export function createServer() {
 
 export async function startServer(config: ServerConfig = {}) {
   const { port = 4096, hostname = "localhost" } = config;
+
+  // Initialize storage
+  await initializeStorage();
+  console.log("Storage initialized");
+
   const app = createServer();
 
   console.log(`Starting OpenWork server on http://${hostname}:${port}`);

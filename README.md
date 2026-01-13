@@ -2,6 +2,12 @@
 
 An AI Agent builder desktop application. Create, configure, and run AI agents with custom personas, skills, and tool integrations.
 
+## Attribution
+
+This project is heavily inspired by and based on [OpenCode](https://opencode.ai/) ([GitHub](https://github.com/sst/opencode)), the open-source AI coding agent. OpenCode is a powerful terminal-based AI assistant that has gained significant community adoption with over 50,000 GitHub stars and 650,000+ monthly users.
+
+OpenWork builds upon the concepts and architecture patterns established by OpenCode, adapting them into a desktop application format with a visual interface for agent building and management. We're grateful to the OpenCode team and community for their pioneering work in open-source AI tooling.
+
 ## Features
 
 - **Custom Agents**: Build agents with personalized system prompts and behaviors

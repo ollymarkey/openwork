@@ -1,4 +1,5 @@
-use tauri::AppHandle;
+use std::path::PathBuf;
+use tauri::{AppHandle, Manager};
 
 #[tauri::command]
 pub fn get_app_version() -> String {
@@ -9,6 +10,6 @@ pub fn get_app_version() -> String {
 pub fn get_data_dir(app: AppHandle) -> Result<String, String> {
     app.path()
         .app_data_dir()
-        .map(|p| p.to_string_lossy().to_string())
-        .map_err(|e| e.to_string())
+        .map(|p: PathBuf| p.to_string_lossy().to_string())
+        .map_err(|e: tauri::Error| e.to_string())
 }
