@@ -4,7 +4,11 @@
       "WebSearch",
       "WebFetch(domain:ai-sdk.dev)",
       "WebFetch(domain:github.com)",
-      "WebFetch(domain:hono.dev)"
+      "WebFetch(domain:hono.dev)",
+      "Bash(bun install:*)",
+      "Bash(timeout /t 3 /nobreak)",
+      "Bash(curl:*)",
+      "Bash(bun run build:*)"
     ]
   }
 }

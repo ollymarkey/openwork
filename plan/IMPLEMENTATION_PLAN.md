@@ -12,12 +12,12 @@ OpenWork is a desktop application for building and running AI agents with config
 ├──────────────┬────────────────────────────────┬────────────────────┤
 │ Left Sidebar │         Main Chat Area         │   Right Sidebar    │
 │              │                                │                    │
-│ - MCP Servers│  ┌──────────────────────────┐  │ - Agent Selector   │
-│ - Google     │  │     Message History      │  │ - System Prompt    │
-│ - Microsoft  │  │  (User/Agent/Tool calls) │  │   (.md editor)     │
-│ - Built-in   │  └──────────────────────────┘  │ - Skills (.md)     │
-│   Tools      │  ┌──────────────────────────┐  │ - Tool Config      │
-│              │  │     Input + Attachments  │  │ - LLM Settings     │
+│ - Agent      │  ┌──────────────────────────┐  │ - MCP Servers      │
+│   Selector   │  │     Message History      │  │ - Google           │
+│ - System     │  │  (User/Agent/Tool calls) │  │ - Microsoft        │
+│   Prompt     │  └──────────────────────────┘  │ - Built-in         │
+│ - Skills     │  ┌──────────────────────────┐  │   Tools            │
+│ - LLM Config │  │     Input + Attachments  │  │                    │
 └──────────────┴──┴──────────────────────────┴──┴────────────────────┘
                               │
                               │ HTTP/WebSocket
@@ -170,11 +170,11 @@ Connect to any MCP-compatible server:
 
 ## Implementation Phases
 
-### Phase 1: Foundation
-- [ ] Monorepo setup (Bun + Turbo)
-- [ ] Core package scaffold
-- [ ] Basic Tauri desktop shell
-- [ ] Hono server with health check
+### Phase 1: Foundation ✓
+- [x] Monorepo setup (Bun + Turbo)
+- [x] Core package scaffold
+- [x] Basic Tauri desktop shell
+- [x] Hono server with health check
 
 ### Phase 2: Agent Core
 - [ ] LLM provider abstraction (AI SDK)

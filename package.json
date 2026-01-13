@@ -1,0 +1,24 @@
+{
+  "name": "openwork",
+  "private": true,
+  "type": "module",
+  "packageManager": "bun@1.1.38",
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "turbo dev",
+    "build": "turbo build",
+    "lint": "turbo lint",
+    "test": "turbo test",
+    "typecheck": "turbo typecheck",
+    "desktop": "bun run --cwd packages/desktop dev",
+    "desktop:build": "bun run --cwd packages/desktop build",
+    "server": "bun run --cwd packages/openwork dev"
+  },
+  "devDependencies": {
+    "@types/bun": "^1.1.14",
+    "turbo": "^2.3.3",
+    "typescript": "^5.7.2"
+  }
+}
