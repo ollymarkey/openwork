@@ -294,6 +294,56 @@ export class StorageService {
     const messages = await this.loadMessages(sessionId);
     return messages.slice(-limit);
   }
+
+  // ============ SKILL OPERATIONS ============
+
+  /**
+   * Get the skills directory path
+   */
+  getSkillsDir(): string {
+    return join(this.basePath, "skills");
+  }
+
+  /**
+   * Get the base storage path
+   */
+  getBasePath(): string {
+    return this.basePath;
+  }
+
+  /**
+   * Save a skill file
+   */
+  async saveSkill(filename: string, content: string): Promise<string> {
+    const skillsDir = this.getSkillsDir();
+    await mkdir(skillsDir, { recursive: true });
+    const filePath = join(skillsDir, filename);
+    await writeFile(filePath, content, "utf-8");
+    return filePath;
+  }
+
+  /**
+   * Delete a skill file by path
+   */
+  async deleteSkill(filePath: string): Promise<boolean> {
+    try {
+      await rm(filePath, { force: true });
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
+  /**
+   * Read a skill file by path
+   */
+  async readSkill(filePath: string): Promise<string | null> {
+    try {
+      return await readFile(filePath, "utf-8");
+    } catch {
+      return null;
+    }
+  }
 }
 
 // Singleton instance

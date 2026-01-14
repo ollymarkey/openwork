@@ -182,11 +182,13 @@ Connect to any MCP-compatible server:
 - [x] Agent executor with tool loop
 - [x] Basic built-in tools (code_write, bash_execute)
 
-### Phase 3: Skills System
-- [ ] Markdown skill parser
-- [ ] Skill discovery service
-- [ ] Skill selector UI
-- [ ] Default skills library
+### Phase 3: Skills System ✓
+- [x] Markdown skill parser
+- [x] Skill discovery service
+- [x] Skill loader for agent executor
+- [x] Skills API endpoints (CRUD + search)
+- [x] Default skills library (6 skills)
+- [ ] Skill selector UI (deferred to Phase 6)
 
 ### Phase 4: MCP Integration
 - [ ] MCP client implementation
@@ -217,11 +219,12 @@ Connect to any MCP-compatible server:
 
 ## Critical Files
 
-1. `packages/openwork/src/agent/executor.ts` - Agent execution engine
-2. `packages/openwork/src/server/routes/v1/sessions.ts` - Session API with streaming
-3. `packages/app/src/stores/session.store.ts` - Chat session state
-4. `packages/openwork/src/skills/loader.ts` - Skill parsing system
-5. `packages/openwork/src/mcp/manager.ts` - MCP server management
+1. `packages/openwork/src/agent/executor.ts` - Agent execution engine with skill loading
+2. `packages/openwork/src/routes/v1/sessions.ts` - Session API with streaming
+3. `packages/openwork/src/skills/` - Skills system (parser, discovery, loader)
+4. `packages/openwork/src/storage/index.ts` - File-based persistence
+5. `packages/openwork/src/mcp/manager.ts` - MCP server management (TODO)
+6. `packages/app/src/stores/session.store.ts` - Chat session state (TODO)
 
 ## Storage Structure
 

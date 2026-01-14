@@ -15,7 +15,9 @@
       "Bash(xxd:*)",
       "Bash(npx --yes sharp-cli:*)",
       "Bash(bun add:*)",
-      "Bash(bun -e:*)"
+      "Bash(bun -e:*)",
+      "Bash(RUST_BACKTRACE=1 cargo run:*)",
+      "Bash(RUST_BACKTRACE=full ./target/debug/openwork.exe:*)"
     ]
   }
 }

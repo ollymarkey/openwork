@@ -1,6 +1,8 @@
 import { streamText, generateText, type CoreMessage, type CoreTool } from "ai";
 import { getLanguageModel, type ProviderId, type ProviderConfig } from "../llm";
 import { getBuiltinTools, type ToolRegistry } from "../tools";
+import { SkillDiscoveryService, SkillLoader, type Skill } from "../skills";
+import { getStorage } from "../storage";
 import type { AgentConfig, BuiltinToolId } from "./types";
 import { readFile } from "fs/promises";
 
@@ -44,14 +46,21 @@ export class AgentExecutor {
   private systemPrompt: string = "";
   private tools: Record<string, CoreTool> = {};
   private initialized: boolean = false;
+  private skillLoader: SkillLoader;
+  private loadedSkills: Skill[] = [];
 
   constructor(config: AgentConfig, providerConfig?: ProviderConfig) {
     this.config = config;
     this.providerConfig = providerConfig;
+
+    // Initialize skill loader with storage directory
+    const storage = getStorage();
+    const discovery = new SkillDiscoveryService([storage.getSkillsDir()]);
+    this.skillLoader = new SkillLoader(discovery);
   }
 
   /**
-   * Initialize the executor - load system prompt and tools
+   * Initialize the executor - load system prompt, skills, and tools
    */
   async initialize(): Promise<void> {
     if (this.initialized) return;
@@ -59,10 +68,29 @@ export class AgentExecutor {
     // Load system prompt
     this.systemPrompt = await this.loadSystemPrompt();
 
+    // Load skills and append to system prompt
+    await this.loadSkills();
+
     // Load tools
     await this.loadTools();
 
     this.initialized = true;
+  }
+
+  /**
+   * Load skills for this agent and append to system prompt
+   */
+  private async loadSkills(): Promise<void> {
+    if (!this.config.skills || this.config.skills.length === 0) {
+      return;
+    }
+
+    this.loadedSkills = await this.skillLoader.loadForAgent(this.config.skills);
+
+    if (this.loadedSkills.length > 0) {
+      const skillContext = this.skillLoader.buildSkillContext(this.loadedSkills);
+      this.systemPrompt += skillContext;
+    }
   }
 
   /**
@@ -251,11 +279,26 @@ export class AgentExecutor {
   }
 
   /**
+   * Get loaded skills
+   */
+  getLoadedSkills(): Skill[] {
+    return this.loadedSkills;
+  }
+
+  /**
+   * Get the skill loader instance
+   */
+  getSkillLoader(): SkillLoader {
+    return this.skillLoader;
+  }
+
+  /**
    * Update the configuration (requires re-initialization)
    */
   updateConfig(config: Partial<AgentConfig>): void {
     this.config = { ...this.config, ...config };
     this.initialized = false;
+    this.loadedSkills = [];
   }
 }
 
