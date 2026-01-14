@@ -190,10 +190,15 @@ Connect to any MCP-compatible server:
 - [x] Default skills library (6 skills)
 - [ ] Skill selector UI (deferred to Phase 6)
 
-### Phase 4: MCP Integration
-- [ ] MCP client implementation
-- [ ] Server management UI
-- [ ] Tool discovery from MCP
+### Phase 4: MCP Integration ✓
+- [x] MCP types and schemas
+- [x] MCP client wrapper (stdio + SSE transports)
+- [x] MCP tool converter (MCP → AI SDK CoreTool)
+- [x] MCP manager (multi-server connection pool)
+- [x] MCP storage persistence
+- [x] MCP API endpoints (CRUD, connect/disconnect, tools)
+- [x] Agent executor MCP integration
+- [ ] Server management UI (deferred to Phase 6)
 
 ### Phase 5: OAuth Integrations
 - [ ] Google OAuth flow

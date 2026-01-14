@@ -1,7 +1,8 @@
 import { streamText, generateText, type CoreMessage, type CoreTool } from "ai";
 import { getLanguageModel, type ProviderId, type ProviderConfig } from "../llm";
-import { getBuiltinTools, type ToolRegistry } from "../tools";
+import { getBuiltinTools } from "../tools";
 import { SkillDiscoveryService, SkillLoader, type Skill } from "../skills";
+import { getMCPManager } from "../mcp";
 import { getStorage } from "../storage";
 import type { AgentConfig, BuiltinToolId } from "./types";
 import { readFile } from "fs/promises";
@@ -125,8 +126,78 @@ export class AgentExecutor {
       this.tools[id] = toolDef.tool;
     }
 
-    // TODO: Load MCP tools
+    // Load MCP tools
+    await this.loadMCPTools();
+
     // TODO: Load integration tools
+  }
+
+  /**
+   * Load tools from configured MCP servers
+   */
+  private async loadMCPTools(): Promise<void> {
+    const mcpRefs = this.config.tools.mcp;
+    if (!mcpRefs || mcpRefs.length === 0) {
+      return;
+    }
+
+    const mcpManager = getMCPManager();
+    const storage = getStorage();
+
+    // Get server IDs that should be loaded
+    const serverIds = mcpRefs.map((ref) => ref.serverId);
+
+    // Ensure servers are loaded and connected
+    for (const serverId of serverIds) {
+      if (!mcpManager.hasServer(serverId)) {
+        // Try to load from storage
+        const config = await storage.getMCPServer(serverId);
+        if (config && config.enabled) {
+          try {
+            await mcpManager.addServer(config, true);
+          } catch (error) {
+            console.error(`Failed to connect to MCP server ${serverId}:`, error);
+          }
+        }
+      } else {
+        // Connect if not already connected
+        const status = mcpManager.getServerStatus(serverId);
+        if (status !== "connected") {
+          try {
+            await mcpManager.connectServer(serverId);
+          } catch (error) {
+            console.error(`Failed to connect to MCP server ${serverId}:`, error);
+          }
+        }
+      }
+    }
+
+    // Get tools from specified servers
+    const mcpTools = mcpManager.getToolsFromServers(serverIds);
+
+    // Filter tools if enabledTools is specified in config
+    for (const ref of mcpRefs) {
+      if (ref.enabledTools && ref.enabledTools.length > 0) {
+        // Only include specified tools from this server
+        const prefix = `mcp_${ref.serverId}_`;
+        for (const [toolId, tool] of mcpTools) {
+          if (toolId.startsWith(prefix)) {
+            const toolName = toolId.slice(prefix.length);
+            if (ref.enabledTools.includes(toolName)) {
+              this.tools[toolId] = tool;
+            }
+          }
+        }
+      } else {
+        // Include all tools from this server
+        const prefix = `mcp_${ref.serverId}_`;
+        for (const [toolId, tool] of mcpTools) {
+          if (toolId.startsWith(prefix)) {
+            this.tools[toolId] = tool;
+          }
+        }
+      }
+    }
   }
 
   /**

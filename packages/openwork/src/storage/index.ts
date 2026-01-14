@@ -5,6 +5,7 @@ import { z } from "zod";
 import type { AgentConfig, CreateAgentInput } from "../agent";
 import { AgentConfigSchema, createAgentConfig } from "../agent";
 import type { Message } from "../agent/executor";
+import type { MCPServerConfig, MCPServersFile } from "../mcp/types";
 
 // Default storage directory
 const DEFAULT_STORAGE_DIR = join(homedir(), ".openwork");
@@ -343,6 +344,97 @@ export class StorageService {
     } catch {
       return null;
     }
+  }
+
+  // ============ MCP SERVER OPERATIONS ============
+
+  /**
+   * Get the MCP servers config file path
+   */
+  getMCPServersPath(): string {
+    return join(this.basePath, "integrations", "mcp-servers.json");
+  }
+
+  /**
+   * Load MCP server configurations
+   */
+  async loadMCPServers(): Promise<MCPServerConfig[]> {
+    try {
+      const content = await readFile(this.getMCPServersPath(), "utf-8");
+      const data = JSON.parse(content) as MCPServersFile;
+      return data.servers || [];
+    } catch {
+      return [];
+    }
+  }
+
+  /**
+   * Save MCP server configurations
+   */
+  async saveMCPServers(servers: MCPServerConfig[]): Promise<void> {
+    const integrationsDir = join(this.basePath, "integrations");
+    await mkdir(integrationsDir, { recursive: true });
+
+    const data: MCPServersFile = {
+      version: 1,
+      servers,
+    };
+
+    await writeFile(this.getMCPServersPath(), JSON.stringify(data, null, 2), "utf-8");
+  }
+
+  /**
+   * Add an MCP server configuration
+   */
+  async addMCPServer(config: MCPServerConfig): Promise<void> {
+    const servers = await this.loadMCPServers();
+
+    // Check for duplicate ID
+    if (servers.some((s) => s.id === config.id)) {
+      throw new Error(`MCP server with ID ${config.id} already exists`);
+    }
+
+    servers.push(config);
+    await this.saveMCPServers(servers);
+  }
+
+  /**
+   * Update an MCP server configuration
+   */
+  async updateMCPServer(serverId: string, config: MCPServerConfig): Promise<boolean> {
+    const servers = await this.loadMCPServers();
+    const index = servers.findIndex((s) => s.id === serverId);
+
+    if (index === -1) {
+      return false;
+    }
+
+    servers[index] = config;
+    await this.saveMCPServers(servers);
+    return true;
+  }
+
+  /**
+   * Remove an MCP server configuration
+   */
+  async removeMCPServer(serverId: string): Promise<boolean> {
+    const servers = await this.loadMCPServers();
+    const filtered = servers.filter((s) => s.id !== serverId);
+
+    if (filtered.length === servers.length) {
+      return false;
+    }
+
+    await this.saveMCPServers(filtered);
+    return true;
+  }
+
+  /**
+   * Get an MCP server by ID
+   */
+  async getMCPServer(serverId: string): Promise<MCPServerConfig | null> {
+    const servers = await this.loadMCPServers();
+    return servers.find((s) => s.id === serverId) || null;
   }
 }
 
